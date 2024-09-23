@@ -1,11 +1,8 @@
 /**
  * @file /utils/configManager.js
- * @description Manages the configuration for the LLM interface module.
+ * @description Manages the configuration for the LLM interface module using dynamic imports.
  */
 
-const fs = require('fs');
-const path = require('path');
-const providersDir = path.join(__dirname, '..', 'config', 'providers');
 const log = require('loglevel');
 
 //log.setLevel('trace');
@@ -20,46 +17,48 @@ const config = {};
  *
  * @param {string|string[]|Object.<string, string>} providerName - The name of the provider,
  * an array of provider names, or an object with provider names as keys and their corresponding API keys as values.
- * @returns {Object|undefined} The loaded configuration(s). If a single provider is loaded, returns its config.
+ * @returns {Promise<Object|undefined>} The loaded configuration(s). If a single provider is loaded, returns its config.
  * If multiple providers are loaded, returns an object with the providers' configs. If no config is found, returns undefined.
  */
-function loadProviderConfig(providerName) {
+async function loadProviderConfig(providerName) {
   if (config && config[providerName] && config[providerName].url) {
     return config[providerName];
   }
 
   /**
-   * Synchronously loads the configuration for a single provider.
+   * Asynchronously loads the configuration for a single provider.
    *
    * @param {string} name - The name of the provider.
-   * @returns {object|null} The provider configuration object or null if the configuration does not exist.
+   * @returns {Promise<object|null>} The provider configuration object or null if the configuration does not exist.
    */
-  function loadSingleProviderConfig(name) {
+  async function loadSingleProviderConfig(name) {
     if (config && config[name] && config[name].url) {
       return config[name];
     }
 
-    const filePath = path.join(providersDir, `${name}.json`);
-    if (fs.existsSync(filePath)) {
-      const providerConfig = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      config[name] = providerConfig;
+    try {
+      const providerConfig = await import(`../config/providers/${name}.json`);
+      config[name] = providerConfig.default || providerConfig;
       return config[name];
+    } catch (error) {
+      log.error(`Failed to load configuration for provider ${name}:`, error);
+      return null;
     }
-
-    return null;
   }
 
   // Handle different types of input
   if (typeof providerName === 'string') {
-    return loadSingleProviderConfig(providerName);
+    return await loadSingleProviderConfig(providerName);
   } else if (Array.isArray(providerName)) {
-    return providerName.reduce((acc, name) => {
-      acc[name] = loadSingleProviderConfig(name);
+    const results = await Promise.all(providerName.map(loadSingleProviderConfig));
+    return providerName.reduce((acc, name, index) => {
+      acc[name] = results[index];
       return acc;
     }, {});
   } else if (typeof providerName === 'object' && providerName !== null) {
-    return Object.keys(providerName).reduce((acc, name) => {
-      acc[name] = loadSingleProviderConfig(name);
+    const results = await Promise.all(Object.keys(providerName).map(loadSingleProviderConfig));
+    return Object.keys(providerName).reduce((acc, name, index) => {
+      acc[name] = results[index];
       return acc;
     }, {});
   }
@@ -68,11 +67,11 @@ function loadProviderConfig(providerName) {
 /**
  * Gets the configuration for a specific provider.
  * @param {string} providerName - The name of the provider.
- * @returns {Object} The configuration object for the provider.
+ * @returns {Promise<Object>} The configuration object for the provider.
  */
-function getProviderConfig(providerName) {
+async function getProviderConfig(providerName) {
   if (!config[providerName]) {
-    loadProviderConfig(providerName);
+    await loadProviderConfig(providerName);
   }
   return config[providerName];
 }
