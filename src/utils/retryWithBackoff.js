@@ -1,7 +1,6 @@
 const { SendMessageError, EmbeddingsError } = require('./errors.js');
 const { delay } = require('./utils.js');
 const log = require('loglevel');
-const performance = require('perf_hooks').performance;
 
 /**
  * Retries the provided function with exponential backoff and handles specific HTTP errors.
