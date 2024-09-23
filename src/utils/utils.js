@@ -275,7 +275,7 @@ async function delay(ms) {
  * @param {object} key - The key object containing relevant information to generate the cache key.
  * @returns {string} - The generated cache key.
  */
-function createCacheKey(key = {}) {
+async function createCacheKey(key = {}) {
   let cacheKey = {
     module: key.module || key.interfaceName || key.interface,
     apiKey: key.apiKey,
@@ -285,10 +285,11 @@ function createCacheKey(key = {}) {
     ...key.interfaceOptions,
   };
 
-  return crypto
-    .createHash('md5')
-    .update(JSON.stringify(cacheKey))
-    .digest('hex');
+  const encoder = new TextEncoder();
+  const data = encoder.encode(JSON.stringify(cacheKey));
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 /* should be moved */
@@ -385,7 +386,7 @@ module.exports = {
   parseJSON,
   isEmptyObject,
   delay,
-  createCacheKey,
+  createCacheKey: async (...args) => await createCacheKey(...args),
   prettyHeader,
   prettyResult,
   prettyText,
