@@ -1,7 +1,7 @@
 const { SendMessageError, EmbeddingsError } = require('./errors.js');
 const { delay } = require('./utils.js');
-const { hrtime } = require('process');
 const log = require('loglevel');
+const performance = require('perf_hooks').performance;
 
 /**
  * Retries the provided function with exponential backoff and handles specific HTTP errors.
@@ -14,7 +14,7 @@ const log = require('loglevel');
  * @throws {SendMessageError|EmbeddingsError} - Throws an error if all retry attempts fail or on specific HTTP errors.
  */
 async function retryWithBackoff(fn, options, errorType) {
-  const start = hrtime();
+  const start = performance.now();
   let { retryAttempts = 3, retryMultiplier = 0.3 } = options;
   let currentRetry = 0;
   let lastError;
@@ -25,14 +25,11 @@ async function retryWithBackoff(fn, options, errorType) {
       log.log(`retryWithBackoff: Attempt ${currentRetry + 1}`);
       let response = await fn();
       if (response?.results) {
-        const end = hrtime(start);
-        const resultsEnd = hrtime(start);
-
-        const milliseconds = end[0] * 1e3 + end[1] / 1e6;
+        const end = performance.now();
+        
+        const milliseconds = end - start;
         response.total_time = milliseconds.toFixed(5);
-
-        const resultsMilliseconds = resultsEnd[0] * 1e3 + resultsEnd[1] / 1e6;
-        response.request_time = resultsMilliseconds.toFixed(5);
+        response.request_time = milliseconds.toFixed(5);
 
         response.retries = currentRetry;
 
@@ -87,8 +84,8 @@ async function retryWithBackoff(fn, options, errorType) {
 
   // If all retries are exhausted without specific HTTP errors, return the last response with additional info
   if (lastError) {
-    const end = hrtime(start);
-    const milliseconds = end[0] * 1e3 + end[1] / 1e6;
+    const end = performance.now();
+    const milliseconds = end - start;
 
     const results = {
       total_time: milliseconds.toFixed(5),
