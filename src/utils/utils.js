@@ -4,7 +4,6 @@
  */
 
 const { getInterfaceConfigValue } = require('./config.js');
-const crypto = require('crypto');
 const GREEN = '\u001b[32m';
 const BLUE = '\u001b[34m';
 const YELLOW = '\x1b[33m';
@@ -386,7 +385,7 @@ module.exports = {
   parseJSON,
   isEmptyObject,
   delay,
-  createCacheKey: async (...args) => await createCacheKey(...args),
+  createCacheKey,
   prettyHeader,
   prettyResult,
   prettyText,

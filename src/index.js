@@ -23,7 +23,6 @@ const {
   getModelByAlias,
   getEmbeddingsModelByAlias,
 } = require('./utils/config.js');
-const { flushCache, configureCache } = require('./utils/cache.js');
 
 // LLMInterface get functions
 LLMInterface.getAllModelNames = getAllModelNames;
@@ -47,10 +46,6 @@ LLMInterface.chat.completions.create = LLMInterfaceSendMessageWithConfig;
 
 // LLMInterface embedding function
 LLMInterface.embeddings = LLMInterfaceEmbeddingsWithConfig;
-
-// LLMInterface cache functions
-LLMInterface.configureCache = configureCache;
-LLMInterface.flushCache = flushCache;
 
 module.exports = {
   LLMInterface,

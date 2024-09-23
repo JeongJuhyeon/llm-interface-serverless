@@ -140,3 +140,4 @@ eslint*
 jest*
 babel.config.js
 .prettier*
+.aider*

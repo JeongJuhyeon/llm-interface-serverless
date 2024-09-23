@@ -86,7 +86,7 @@ async function LLMInterfaceEmbeddings(
       ? interfaceOptions
       : interfaceOptions.cacheTimeoutSeconds;
 
-  const cacheKey = createCacheKey({
+  const cacheKey = await createCacheKey({
     interfaceName,
     apiKey,
     embeddingString,

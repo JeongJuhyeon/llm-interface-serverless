@@ -79,7 +79,7 @@ async function LLMInterfaceSendMessage(
       ? interfaceOptions
       : interfaceOptions.cacheTimeoutSeconds;
 
-  const cacheKey = createCacheKey({
+  const cacheKey = await createCacheKey({
     interfaceName,
     apiKey,
     message,
