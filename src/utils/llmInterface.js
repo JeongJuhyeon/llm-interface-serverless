@@ -1,32 +1,36 @@
 /**
  * @file /src/utils/llmInterface.js
- * @description Build the base LLMInterface used providers.js
+ * @description Build the base LLMInterface used by providers.js
  */
 
 const { activeProviders } = require('../config/providers.js');
 
-const interfaces = {};
-
-for (const interfaceName of Object.keys(activeProviders)) {
-  interfaces[interfaceName] = `../interfaces/${interfaceName}`;
-}
+// Import all possible interfaces
+const anthropicInterface = require('../interfaces/anthropic');
+const openAIInterface = require('../interfaces/openai');
+const googleInterface = require('../interfaces/google');
+const azureInterface = require('../interfaces/azure');
+// Add more interfaces as needed
 
 /**
- * Dynamically imports and initializes LLM interfaces based on the list of active providers.
+ * Creates the LLMInterface object with all available interfaces,
+ * but only exposes the active ones.
  * @namespace
  */
-const LLMInterface = {};
-Object.keys(interfaces).forEach((key) => {
-  Object.defineProperty(LLMInterface, key, {
-    get: function () {
-      if (!this[`_${key}`]) {
-        this[`_${key}`] = require(interfaces[key]);
-      }
-      return this[`_${key}`];
-    },
-    enumerable: true,
-    configurable: true,
-  });
-});
+const LLMInterface = {
+  anthropic: anthropicInterface,
+  openai: openAIInterface,
+  google: googleInterface,
+  azure: azureInterface,
+  // Add more interfaces as needed
+};
 
-module.exports = { LLMInterface };
+// Filter the LLMInterface to only include active providers
+const ActiveLLMInterface = Object.keys(activeProviders).reduce((acc, key) => {
+  if (LLMInterface[key]) {
+    acc[key] = LLMInterface[key];
+  }
+  return acc;
+}, {});
+
+module.exports = { LLMInterface: ActiveLLMInterface };
