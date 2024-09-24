@@ -1,4 +1,4 @@
-{
+module.exports = {
   "url": "https://api.openai.com/v1/chat/completions",
   "model": {
     "default": "gpt-4o-mini",

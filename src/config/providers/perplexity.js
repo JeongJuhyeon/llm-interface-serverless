@@ -1,4 +1,4 @@
-{
+module.exports = {
   "url": "https://api.perplexity.ai/chat/completions",
   "model": {
     "default": "llama-3.1-sonar-large-128k-chat",
