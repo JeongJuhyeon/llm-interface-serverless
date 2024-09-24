@@ -37,7 +37,8 @@ async function loadProviderConfig(providerName) {
     }
 
     try {
-      const providerConfig = await import(`../config/providers/${name}.json`);
+      
+      const providerConfig = await import(`../config/providers/${name}.json`, { assert: { type: 'json' } });
       config[name] = providerConfig.default || providerConfig;
       return config[name];
     } catch (error) {
