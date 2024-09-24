@@ -63,8 +63,15 @@ class BaseInterface {
   createMessageObject(message) {
     const createMessageObject =
       this.config[this.interfaceName].createMessageObject;
-    const messageObjectFunction =
-      global[createMessageObject] || getMessageObject; // added default, so error will never throw
+    let messageObjectFunction;
+    if (createMessageObject === "getSimpleMessageObject") {
+      messageObjectFunction = getSimpleMessageObject;
+    } else if (createMessageObject === "getMessageObject") {
+      messageObjectFunction = getMessageObject;
+    } else {
+      console.warn(`Function '${createMessageObject}' is not defined in the utils.`);
+      messageObjectFunction = getMessageObject;
+    }
 
     if (typeof messageObjectFunction !== 'function') {
       throw new LLMInterfaceError(
