@@ -1,0 +1,1 @@
+module.exports = {"url":"https://api.reka.ai/v1/chat","model":{"default":"reka-core","large":"reka-core","small":"reka-edge","agent":"reka-core"},"createMessageObject":"getMessageObject","stream":true,"jsonMode":false,"maxTokens":true,"hasEmbeddings":false}

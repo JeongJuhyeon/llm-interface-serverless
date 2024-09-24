@@ -3,11 +3,11 @@
  * @description Build the base LLMInterface used providers.js
  */
 
-const { listOfActiveProviders } = require('../config/providers.js');
+const { activeProviders } = require('../config/providers.js');
 
 const interfaces = {};
 
-for (const interfaceName of listOfActiveProviders) {
+for (const interfaceName of Object.keys(activeProviders)) {
   interfaces[interfaceName] = `../interfaces/${interfaceName}`;
 }
 

@@ -4,6 +4,7 @@
  */
 
 const log = require('loglevel');
+const { activeProviders } = require('../config/providers.js');
 
 //log.setLevel('trace');
 
@@ -36,9 +37,8 @@ async function loadProviderConfig(providerName) {
       return config[name];
     }
 
-    try {
-      
-      const providerConfig = await import(`../config/providers/${name}.json`, { assert: { type: 'json' } });
+    try {   
+      const providerConfig = activeProviders[name];
       config[name] = providerConfig.default || providerConfig;
       return config[name];
     } catch (error) {

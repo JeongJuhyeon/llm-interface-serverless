@@ -8,7 +8,7 @@ const {
   loadProviderConfig,
   updateConfig,
 } = require('./configManager.js');
-const { listOfActiveProviders } = require('../config/providers.js');
+const { activeProviders } = require('../config/providers.js');
 const log = require('loglevel');
 
 /**
@@ -165,7 +165,7 @@ function getInterfaceConfigValue(interfaceName, key, passThrough = false) {
  * @returns {string[]} - An array of model names.
  */
 function getAllModelNames() {
-  return listOfActiveProviders.sort();
+  return Object.keys(activeProviders).sort();
 }
 
 /**

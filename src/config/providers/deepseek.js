@@ -1,0 +1,1 @@
+module.exports = {"url":"https://api.deepseek.com/chat/completions","model":{"default":"deepseek-chat","large":"deepseek-chat","small":"deepseek-chat","agent":"deepseek-chat"},"createMessageObject":"getMessageObject","stream":true,"jsonMode":false,"maxTokens":true,"hasEmbeddings":false}
