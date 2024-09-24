@@ -42,7 +42,7 @@ async function loadProviderConfig(providerName) {
       config[name] = providerConfig.default || providerConfig;
       return config[name];
     } catch (error) {
-      log.warn(`Failed to load configuration for provider ${name}:`, error);
+      log.debug(`Failed to load configuration for provider ${name}:`, error);
       return null;
     }
   }
