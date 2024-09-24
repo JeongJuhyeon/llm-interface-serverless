@@ -14,8 +14,8 @@ const { activeInterfaces } = require('../config/interfaces.js');
 const LLMInterface = {};
 
 // Populate LLMInterface with active interfaces
-Object.keys(activeInterfaces).forEach(async (key) => {
-  const interfaceModule = await activeInterfaces[key];
+Object.keys(activeInterfaces).forEach((key) => {
+  const interfaceModule = activeInterfaces[key];
   LLMInterface[key] = interfaceModule.default || interfaceModule;
 });
 
