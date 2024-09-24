@@ -59,7 +59,7 @@ async function LLMInterfaceSendMessage(
   if (!LLMInterface[interfaceName]) {
     log.log(LLMInterface);
     throw new SendMessageError(
-      `Unsupported LLM interfaceName: ${interfaceName}`,
+      `Unsupported LLM interfaceName: ${interfaceName}, supported interfaces: ${Object.keys(LLMInterface)}`,
     );
   }
 

@@ -21,7 +21,7 @@ Object.keys(activeInterfaces).forEach(async (key) => {
 
 // Filter the LLMInterface to only include active providers
 const ActiveLLMInterface = Object.keys(activeProviders).reduce((acc, key) => {
-  if (LLMInterface[key]) {
+  if (key in LLMInterface) {
     acc[key] = LLMInterface[key];
   }
   return acc;
