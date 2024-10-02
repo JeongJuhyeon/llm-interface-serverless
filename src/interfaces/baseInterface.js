@@ -48,7 +48,7 @@ class BaseInterface {
         ...headers,
         Authorization: `Bearer ${this.apiKey}`,
       },
-      timeout: 90000,
+      timeout: 120*1000,
       //signal: controller.signal,
     });
     this.config = config;
